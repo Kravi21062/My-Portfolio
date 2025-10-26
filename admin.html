@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        
+        .content {
+            transition: all 0.3s ease;
+        }
+        
+        .card {
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .message-item {
+            transition: all 0.3s ease;
+        }
+        
+        .message-item:hover {
+            background-color: #f8fafc;
+        }
+        
+        .unread {
+            border-left: 4px solid #3b82f6;
+            background-color: #eff6ff;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="sidebar w-64 bg-white shadow-lg">
+            <div class="p-6">
+                <h1 class="text-2xl font-bold text-gray-800">Portfolio Admin</h1>
+                <p class="text-gray-600 text-sm mt-2">Manage your portfolio</p>
+            </div>
+            
+            <nav class="mt-6">
+                <a href="#dashboard" class="nav-link flex items-center px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-tachometer-alt mr-3"></i>
+                    Dashboard
+                </a>
+                <a href="#messages" class="nav-link flex items-center px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-envelope mr-3"></i>
+                    Messages
+                </a>
+                <a href="#projects" class="nav-link flex items-center px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-project-diagram mr-3"></i>
+                    Projects
+                </a>
+                <a href="#skills" class="nav-link flex items-center px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-code mr-3"></i>
+                    Skills
+                </a>
+            </nav>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content flex-1 overflow-auto">
+            <!-- Header -->
+            <header class="bg-white shadow-sm border-b px-6 py-4">
+                <div class="flex justify-between items-center">
+                    <h2 id="page-title" class="text-xl font-semibold text-gray-800">Dashboard</h2>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-gray-600">Welcome, Admin</span>
+                        <button onclick="logout()" class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Dashboard Content -->
+            <div class="p-6">
+                <!-- Dashboard Overview -->
+                <div id="dashboard-content">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="card bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                                    <i class="fas fa-envelope text-2xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="text-lg font-semibold text-gray-800" id="total-messages">0</h3>
+                                    <p class="text-gray-600">Total Messages</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                                    <i class="fas fa-envelope-open text-2xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="text-lg font-semibold text-gray-800" id="unread-messages">0</h3>
+                                    <p class="text-gray-600">Unread Messages</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-full bg-green-100 text-green-600">
+                                    <i class="fas fa-project-diagram text-2xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="text-lg font-semibold text-gray-800" id="total-projects">0</h3>
+                                    <p class="text-gray-600">Total Projects</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                                    <i class="fas fa-code text-2xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="text-lg font-semibold text-gray-800" id="total-skills">0</h3>
+                                    <p class="text-gray-600">Total Skills</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="card bg-white rounded-lg shadow p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Messages</h3>
+                            <div id="recent-messages" class="space-y-3">
+                                <!-- Recent messages will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <div class="card bg-white rounded-lg shadow p-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
+                            <div class="space-y-3">
+                                <button onclick="showSection('messages')" class="w-full text-left p-3 rounded-lg border hover:bg-gray-50 transition-colors">
+                                    <i class="fas fa-envelope mr-2"></i>
+                                    View All Messages
+                                </button>
+                                <button onclick="showSection('projects')" class="w-full text-left p-3 rounded-lg border hover:bg-gray-50 transition-colors">
+                                    <i class="fas fa-plus mr-2"></i>
+                                    Add New Project
+                                </button>
+                                <button onclick="showSection('skills')" class="w-full text-left p-3 rounded-lg border hover:bg-gray-50 transition-colors">
+                                    <i class="fas fa-plus mr-2"></i>
+                                    Add New Skill
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Messages Section -->
+                <div id="messages-content" class="hidden">
+                    <div class="card bg-white rounded-lg shadow">
+                        <div class="p-6 border-b">
+                            <h3 class="text-lg font-semibold text-gray-800">Contact Messages</h3>
+                        </div>
+                        <div class="p-6">
+                            <div id="messages-list" class="space-y-4">
+                                <!-- Messages will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Projects Section -->
+                <div id="projects-content" class="hidden">
+                    <div class="card bg-white rounded-lg shadow">
+                        <div class="p-6 border-b flex justify-between items-center">
+                            <h3 class="text-lg font-semibold text-gray-800">Projects</h3>
+                            <button onclick="showAddProjectForm()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                <i class="fas fa-plus mr-2"></i>Add Project
+                            </button>
+                        </div>
+                        <div class="p-6">
+                            <div id="projects-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <!-- Projects will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Skills Section -->
+                <div id="skills-content" class="hidden">
+                    <div class="card bg-white rounded-lg shadow">
+                        <div class="p-6 border-b flex justify-between items-center">
+                            <h3 class="text-lg font-semibold text-gray-800">Skills</h3>
+                            <button onclick="showAddSkillForm()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                <i class="fas fa-plus mr-2"></i>Add Skill
+                            </button>
+                        </div>
+                        <div class="p-6">
+                            <div id="skills-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <!-- Skills will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Project Modal -->
+    <div id="add-project-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+            <h3 class="text-lg font-semibold mb-4">Add New Project</h3>
+            <form id="add-project-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                    <input type="text" name="title" required class="w-full p-2 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea name="description" required rows="3" class="w-full p-2 border rounded-lg"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                    <input type="url" name="image_url" class="w-full p-2 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Live URL</label>
+                    <input type="url" name="live_url" class="w-full p-2 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Source URL</label>
+                    <input type="url" name="source_url" class="w-full p-2 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Technologies (comma-separated)</label>
+                    <input type="text" name="technologies" class="w-full p-2 border rounded-lg">
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="hideAddProjectForm()" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Add Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Add Skill Modal -->
+    <div id="add-skill-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+            <h3 class="text-lg font-semibold mb-4">Add New Skill</h3>
+            <form id="add-skill-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Skill Name</label>
+                    <input type="text" name="name" required class="w-full p-2 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                    <select name="category" required class="w-full p-2 border rounded-lg">
+                        <option value="">Select Category</option>
+                        <option value="Frontend">Frontend</option>
+                        <option value="Backend">Backend</option>
+                        <option value="Database">Database</option>
+                        <option value="Tools">Tools</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Proficiency (%)</label>
+                    <input type="number" name="proficiency" min="1" max="100" required class="w-full p-2 border rounded-lg">
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="hideAddSkillForm()" class="px-4 py-2 text-gray-600 hover:text-gray-800">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Add Skill</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentSection = 'dashboard';
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboard();
+            setupNavigation();
+        });
+        
+        // Navigation setup
+        function setupNavigation() {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('href').substring(1);
+                    showSection(section);
+                });
+            });
+        }
+        
+        // Show different sections
+        function showSection(section) {
+            // Hide all content sections
+            document.querySelectorAll('[id$="-content"]').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            // Remove active class from nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('bg-blue-50', 'text-blue-600');
+                link.classList.add('text-gray-700');
+            });
+            
+            // Show selected section
+            document.getElementById(`${section}-content`).classList.remove('hidden');
+            
+            // Update nav link styling
+            document.querySelector(`[href="#${section}"]`).classList.add('bg-blue-50', 'text-blue-600');
+            document.querySelector(`[href="#${section}"]`).classList.remove('text-gray-700');
+            
+            // Update page title
+            document.getElementById('page-title').textContent = section.charAt(0).toUpperCase() + section.slice(1);
+            
+            currentSection = section;
+            
+            // Load section-specific data
+            switch(section) {
+                case 'dashboard':
+                    loadDashboard();
+                    break;
+                case 'messages':
+                    loadMessages();
+                    break;
+                case 'projects':
+                    loadProjects();
+                    break;
+                case 'skills':
+                    loadSkills();
+                    break;
+            }
+        }
+        
+        // Load dashboard data
+        async function loadDashboard() {
+            try {
+                const response = await fetch('/api/stats');
+                const stats = await response.json();
+                
+                document.getElementById('total-messages').textContent = stats.total_messages;
+                document.getElementById('unread-messages').textContent = stats.unread_messages;
+                document.getElementById('total-projects').textContent = stats.total_projects;
+                document.getElementById('total-skills').textContent = stats.total_skills;
+                
+                // Load recent messages
+                const messagesResponse = await fetch('/api/contact');
+                const messages = await messagesResponse.json();
+                
+                const recentMessagesHtml = messages.slice(0, 5).map(message => `
+                    <div class="flex items-center justify-between p-3 rounded-lg border">
+                        <div>
+                            <p class="font-medium">${message.name}</p>
+                            <p class="text-sm text-gray-600">${message.subject}</p>
+                        </div>
+                        <span class="text-xs text-gray-500">${new Date(message.created_at).toLocaleDateString()}</span>
+                    </div>
+                `).join('');
+                
+                document.getElementById('recent-messages').innerHTML = recentMessagesHtml;
+                
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+        
+        // Load messages
+        async function loadMessages() {
+            try {
+                const response = await fetch('/api/contact');
+                const messages = await response.json();
+                
+                const messagesHtml = messages.map(message => `
+                    <div class="message-item p-4 rounded-lg border ${!message.read_status ? 'unread' : ''}">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h4 class="font-semibold">${message.name}</h4>
+                                <p class="text-sm text-gray-600">${message.email}</p>
+                            </div>
+                            <span class="text-xs text-gray-500">${new Date(message.created_at).toLocaleString()}</span>
+                        </div>
+                        <h5 class="font-medium mb-2">${message.subject}</h5>
+                        <p class="text-gray-700">${message.message}</p>
+                    </div>
+                `).join('');
+                
+                document.getElementById('messages-list').innerHTML = messagesHtml;
+                
+            } catch (error) {
+                console.error('Error loading messages:', error);
+            }
+        }
+        
+        // Load projects
+        async function loadProjects() {
+            try {
+                const response = await fetch('/api/projects');
+                const projects = await response.json();
+                
+                const projectsHtml = projects.map(project => `
+                    <div class="card bg-white rounded-lg shadow p-6">
+                        <h4 class="font-semibold mb-2">${project.title}</h4>
+                        <p class="text-gray-600 mb-4">${project.description}</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${project.technologies.map(tech => `
+                                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">${tech}</span>
+                            `).join('')}
+                        </div>
+                        <div class="flex space-x-2">
+                            ${project.live_url ? `<a href="${project.live_url}" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm">Live Demo</a>` : ''}
+                            ${project.source_url ? `<a href="${project.source_url}" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm">Source Code</a>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+                
+                document.getElementById('projects-list').innerHTML = projectsHtml;
+                
+            } catch (error) {
+                console.error('Error loading projects:', error);
+            }
+        }
+        
+        // Load skills
+        async function loadSkills() {
+            try {
+                const response = await fetch('/api/skills');
+                const skills = await response.json();
+                
+                const skillsHtml = skills.map(skill => `
+                    <div class="card bg-white rounded-lg shadow p-6">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-semibold">${skill.name}</h4>
+                            <span class="text-sm text-gray-600">${skill.category}</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-blue-600 h-2 rounded-full" style="width: ${skill.proficiency}%"></div>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">${skill.proficiency}% proficiency</p>
+                    </div>
+                `).join('');
+                
+                document.getElementById('skills-list').innerHTML = skillsHtml;
+                
+            } catch (error) {
+                console.error('Error loading skills:', error);
+            }
+        }
+        
+        // Project form functions
+        function showAddProjectForm() {
+            document.getElementById('add-project-modal').classList.remove('hidden');
+        }
+        
+        function hideAddProjectForm() {
+            document.getElementById('add-project-modal').classList.add('hidden');
+            document.getElementById('add-project-form').reset();
+        }
+        
+        // Skill form functions
+        function showAddSkillForm() {
+            document.getElementById('add-skill-modal').classList.remove('hidden');
+        }
+        
+        function hideAddSkillForm() {
+            document.getElementById('add-skill-modal').classList.add('hidden');
+            document.getElementById('add-skill-form').reset();
+        }
+        
+        // Form submissions
+        document.getElementById('add-project-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const projectData = {
+                title: formData.get('title'),
+                description: formData.get('description'),
+                image_url: formData.get('image_url'),
+                live_url: formData.get('live_url'),
+                source_url: formData.get('source_url'),
+                technologies: formData.get('technologies').split(',').map(tech => tech.trim()).filter(tech => tech)
+            };
+            
+            try {
+                const response = await fetch('/api/projects', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(projectData)
+                });
+                
+                if (response.ok) {
+                    alert('Project added successfully!');
+                    hideAddProjectForm();
+                    loadProjects();
+                    loadDashboard();
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.error}`);
+                }
+            } catch (error) {
+                console.error('Error adding project:', error);
+                alert('Failed to add project. Please try again.');
+            }
+        });
+        
+        document.getElementById('add-skill-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const skillData = {
+                name: formData.get('name'),
+                category: formData.get('category'),
+                proficiency: parseInt(formData.get('proficiency'))
+            };
+            
+            try {
+                const response = await fetch('/api/skills', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(skillData)
+                });
+                
+                if (response.ok) {
+                    alert('Skill added successfully!');
+                    hideAddSkillForm();
+                    loadSkills();
+                    loadDashboard();
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.error}`);
+                }
+            } catch (error) {
+                console.error('Error adding skill:', error);
+                alert('Failed to add skill. Please try again.');
+            }
+        });
+        
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = '/';
+            }
+        }
+        
+        // Close modals when clicking outside
+        document.getElementById('add-project-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideAddProjectForm();
+            }
+        });
+        
+        document.getElementById('add-skill-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideAddSkillForm();
+            }
+        });
+    </script>
+</body>
+</html> 
